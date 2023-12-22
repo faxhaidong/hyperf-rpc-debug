@@ -1,5 +1,11 @@
-# component-creator
+# Installation using Composer
 
 ```
-composer create-project hyperf/component-creator
+composer require faxhaidong/hyperf-rpc-debug
+```
+
+# Publish config routes
+
+```
+php bin/hyperf.php vendor:publish faxhaidong/hyperf-rpc-debug
 ```

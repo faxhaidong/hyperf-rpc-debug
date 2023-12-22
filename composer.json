@@ -1,20 +1,15 @@
 {
-    "name": "haidong/debug",
+    "name": "faxhaidong/hyperf-rpc-debug",
     "type": "library",
     "license": "MIT",
     "keywords": [
         "php",
         "hyperf"
     ],
-    "description": "xy",
+    "description": "hyperf-rpc-debug",
     "autoload": {
         "psr-4": {
-            "Haidong\\Debug\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "HyperfTest\\": "tests"
+            "Faxhaidong\\HyperfRpcDebug\\": "src/"
         }
     },
     "require": {
@@ -45,7 +40,7 @@
     },
     "extra": {
         "hyperf": {
-            "config": "Haidong\\Debug\\ConfigProvider"
+            "config": "Faxhaidong\\HyperfRpcDebug\\ConfigProvider"
         }
     }
 }
