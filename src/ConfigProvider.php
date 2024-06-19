@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Faxhaidong\HyperfRpcDebug;
 
 use Hyperf\Server\Event;
+use function Hyperf\Support\env;
 
 class ConfigProvider
 {
