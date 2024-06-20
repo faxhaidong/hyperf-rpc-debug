@@ -28,8 +28,9 @@ class RpcDebugController
     function test()
     {
         $this->classmap = [];
+        $defaultPort = env('HTTP_PORT', 8075);
         $server = $this->request->input('server', '127.0.0.1');
-        $port = $this->request->input('port', 8075);
+        $port = $this->request->input('port', $defaultPort);
         $par = trim($this->request->input('fucontionname', "[\n\n]"));
         if ($this->request->getMethod() == 'POST') {
             //请求数据.
