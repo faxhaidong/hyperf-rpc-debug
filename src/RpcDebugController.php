@@ -29,7 +29,7 @@ class RpcDebugController
     {
         $this->classmap = [];
         $server = $this->request->input('server', '127.0.0.1');
-        $port = $this->request->input('port', 8705);
+        $port = $this->request->input('port', 8075);
         $par = trim($this->request->input('fucontionname', "[\n\n]"));
         if ($this->request->getMethod() == 'POST') {
             //请求数据.
@@ -189,7 +189,7 @@ html;
             $parameters = $method->getParameters();
             $tmpPar = [
                 '<pre>',
-                $method->getDocComment(),
+                $this->trimDocComment($method->getDocComment()),
                 '</pre>',
             ];
             foreach ($parameters as $parameter) {
@@ -222,5 +222,23 @@ html;
             }
             $this->classmap[$sername]['funlist'][$name] = $tmpPar;
         }
+    }
+
+    /**
+     * 移除注释中的冗余空格
+     * @param string $docComment 内容.
+     * @return string
+     */
+    private function trimDocComment(string $docComment): string
+    {
+        if(!strpos($docComment,PHP_EOL)){
+            return $docComment;
+        }
+
+        $docCommentList = explode(PHP_EOL, $docComment);
+        foreach ($docCommentList as $key => $content){
+            $docCommentList[$key] = ltrim($content);
+        }
+        return join(PHP_EOL, $docCommentList);
     }
 }
