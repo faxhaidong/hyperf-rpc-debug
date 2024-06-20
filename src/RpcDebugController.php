@@ -8,14 +8,17 @@ use Hyperf\JsonRpc\Packer\JsonEofPacker;
 use Hyperf\JsonRpc\Packer\JsonLengthPacker;
 use Hyperf\RpcServer\Annotation\RpcService;
 
+use function Hyperf\Config\config;
+use function Hyperf\Support\env;
+
 class RpcDebugController
 {
     protected $request;
     protected $response;
     protected $classmap = [];
     public function __construct() {
-        $this->request = \Hyperf\Utils\ApplicationContext::getContainer()->get(\Hyperf\HttpServer\Contract\RequestInterface::class);
-        $this->response = \Hyperf\Utils\ApplicationContext::getContainer()->get(\Hyperf\HttpServer\Contract\ResponseInterface::class);
+        $this->request = \Hyperf\Context\ApplicationContext::getContainer()->get(\Hyperf\HttpServer\Contract\RequestInterface::class);
+        $this->response = \Hyperf\Context\ApplicationContext::getContainer()->get(\Hyperf\HttpServer\Contract\ResponseInterface::class);
     }
     /**
      * 测试.
@@ -26,9 +29,7 @@ class RpcDebugController
     {
         $this->classmap = [];
         $server = $this->request->input('server', '127.0.0.1');
-        $port = $this->request->input('port', 9302);
-        $method = $this->request->input('method', 'encyclopediasSearch');
-        $class = $this->request->input('servername', 'Search');
+        $port = $this->request->input('port', 8705);
         $par = trim($this->request->input('fucontionname', "[\n\n]"));
         if ($this->request->getMethod() == 'POST') {
             //请求数据.
@@ -116,15 +117,15 @@ html;
         $params = json_decode($data['par'], true);
         $data = [
             "jsonrpc" => '2.0',
-            'method' => \Hyperf\Utils\ApplicationContext::getContainer()->get(\Hyperf\Rpc\PathGenerator\PathGenerator::class)->generate($data['servername'], $data['fucontionname']),
+            'method' => \Hyperf\Context\ApplicationContext::getContainer()->get(\Hyperf\Rpc\PathGenerator\PathGenerator::class)->generate($data['servername'], $data['fucontionname']),
             'params' => $params,
-            'id' => uniqid() . 'ttt',
+            'id' => uniqid() .'k'. time(),
             'context' => [],
         ];
         if ($this->isLengthCheck()) {
-            $packer = \Hyperf\Utils\ApplicationContext::getContainer()->get(JsonLengthPacker::class);
+            $packer = \Hyperf\Context\ApplicationContext::getContainer()->get(JsonLengthPacker::class);
         } else {
-            $packer = \Hyperf\Utils\ApplicationContext::getContainer()->get(JsonEofPacker::class);
+            $packer = \Hyperf\Context\ApplicationContext::getContainer()->get(JsonEofPacker::class);
         }
         $dat = $packer->pack($data);
         socket_write($socket, $dat, strlen($dat));
@@ -213,7 +214,11 @@ html;
                 $tmpPar[] = implode('',$tmpstr);
             }
             if ($method->getReturnType()) {
-                $tmpPar[] = '@return '.$method->getReturnType()->getName();
+                try {
+                    $tmpPar[] = '@return '.$method->getReturnType()->getName();
+                }catch (\Throwable $ex){
+                    $tmpPar[] = '@return unknown';
+                }
             }
             $this->classmap[$sername]['funlist'][$name] = $tmpPar;
         }
