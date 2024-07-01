@@ -42,6 +42,9 @@ class ConfigProvider
 				        'callbacks' => [
 					        Event::ON_REQUEST => ['HttpRpcDebug', 'onRequest'],
 				        ],
+				        'settings' => [
+					        'daemonize' => env('DAEMONIZE', true),
+				        ],
 			        ],
 		        ]
 	        ],
